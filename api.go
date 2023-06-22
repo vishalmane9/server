@@ -10,7 +10,6 @@ import (
 
 func funcDB(action string, index int) interface{} {
 	personList := []Person{{"vishal", 24.5, 1996}, {"Amit", 25.5, 1992}, {"Manuwela", 26.5, 1991}, {"Anaya", 27.5, 1990}, {"Rahul", 28.5, 1990}}
-	// personList := []Person{{"vishal", 24.5, 1996}}
 
 	if index >= len(personList) {
 		return -1
@@ -29,14 +28,13 @@ func Thread1(i int, wg *sync.WaitGroup, isDataAvailable chan bool, personChannel
 	funcData := funcDB("getData", i)
 
 	val, exist := funcData.(int)
-	fmt.Println("exist : ", exist)
+	// fmt.Println("data exist ? : ", exist)
 	if exist && val == -1 {
 		personChannel <- ""
 		isDataAvailable <- false
-		// go Thread2("", wg, isDataAvailable, ctx)
 	} else {
 		data := Person{Name: funcData.(Person).Name, Age: funcData.(Person).Age, Year: funcData.(Person).Year}
-		fmt.Println("funcDB data : ", data)
+		// fmt.Println("funcDB data : ", data)
 
 		p1, err := json.Marshal(data)
 		if err != nil {
@@ -46,7 +44,6 @@ func Thread1(i int, wg *sync.WaitGroup, isDataAvailable chan bool, personChannel
 		fmt.Println("marshalled data : ", string(p1))
 		personChannel <- string(p1)
 		isDataAvailable <- true
-		// go Thread2(string(p1), wg, isDataAvailable, ctx)
 	}
 }
 
@@ -67,7 +64,6 @@ func Thread2(data chan string, wg *sync.WaitGroup, isDataAvailable chan bool, ct
 					fmt.Println("Unmarshaling error : ", err)
 				}
 				fmt.Println("unmarshalled data : ", unMarshalledPerson)
-				//TODO: send the recived data to Thread 3 over grpc by goroutine
 			}
 		}
 	}

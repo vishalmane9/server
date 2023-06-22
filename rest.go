@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"google.golang.org/protobuf/proto"
 )
 
 var restData []protocol.Person
@@ -39,7 +38,7 @@ func runRestClient() {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			fmt.Println("response log : ", resp)
+			// fmt.Println("response log : ", resp)
 			defer resp.Body.Close()
 			bodyBytes, _ := ioutil.ReadAll(resp.Body)
 
@@ -62,19 +61,7 @@ func runRestServer(ctx *gin.Context) {
 	fmt.Println("rest server data : ", input)
 
 	if input.Name != "" {
-		personobj := protocol.Person{
-			Name: string(input.Name),
-			Age:  float64(input.Age),
-			Year: int32(input.Year),
-		}
-
-		// restData = append(restData, personobj)
-		// fmt.Println("restData : ", restData)
-		data, err := proto.Marshal(&personobj)
-		if err != nil {
-			fmt.Println("Proto Marshalling error : ", err)
-		}
-		fmt.Println("Proto marshalled data : ", data)
+		go runGrpcClient(input)
 
 	} else {
 		fmt.Println("Empty data recieved")

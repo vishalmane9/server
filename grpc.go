@@ -42,17 +42,7 @@ func runGrpcServer() {
 	}
 }
 
-// func getGrpcClient() protocol.PrintServiceClient {
-// 	conn, err := grpc.Dial("127.0.0.1:8085", grpc.WithInsecure())
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-// 	// defer conn.Close()
-// 	client := protocol.NewPrintServiceClient(conn)
-// 	return client
-// }
-
-func runGrpcClient() {
+func runGrpcClient(input Person) {
 	conn, err := grpc.Dial("127.0.0.1:8085", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln(err)
@@ -62,22 +52,49 @@ func runGrpcClient() {
 	client := protocol.NewPrintServiceClient(conn)
 
 	fmt.Println("In the grpc client")
-
 	currentPerson := &protocol.Person{
-		Name: "harshit",
-		Age:  26,
-		Year: 1995,
+		Name: string(input.Name),
+		Age:  float64(input.Age),
+		Year: int32(input.Year),
 	}
-	fmt.Println("currentPerson : ", currentPerson)
 
 	ctx := context.Background()
-	personProtocol, err := client.PrintPerson(ctx, currentPerson)
-	fmt.Println("personProtocol : ", personProtocol)
+	personProtocol, _ := client.PrintPerson(ctx, currentPerson)
+	fmt.Printf("grpc perons data: [%v] <-> [%v] <->[%v] \n", personProtocol.GetName(), personProtocol.GetAge(), personProtocol.GetYear())
 	data, err := proto.Marshal(personProtocol)
 	if err != nil {
 		fmt.Println("Proto Marshalling error : ", err)
 	}
 	fmt.Println("Proto marshalled data : ", data)
-
-	fmt.Println("grpc client persons protocol : ", string(data))
 }
+
+//backup
+// func runGrpcClient() {
+// 	conn, err := grpc.Dial("127.0.0.1:8085", grpc.WithInsecure())
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
+
+// 	defer conn.Close()
+// 	client := protocol.NewPrintServiceClient(conn)
+
+// 	fmt.Println("In the grpc client")
+
+// 	currentPerson := &protocol.Person{
+// 		Name: "harshit",
+// 		Age:  26,
+// 		Year: 1995,
+// 	}
+// 	fmt.Println("currentPerson : ", currentPerson)
+
+// 	ctx := context.Background()
+// 	personProtocol, err := client.PrintPerson(ctx, currentPerson)
+// 	fmt.Println("personProtocol : ", personProtocol)
+// 	data, err := proto.Marshal(personProtocol)
+// 	if err != nil {
+// 		fmt.Println("Proto Marshalling error : ", err)
+// 	}
+// 	fmt.Println("Proto marshalled data : ", data)
+
+// 	fmt.Println("grpc client persons protocol : ", string(data))
+// }

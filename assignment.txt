@@ -25,3 +25,13 @@ stage 1: funcDB and thread1, thread2  rest api consumption and channel signaling
 stage2: protobuf grpc commuinication from thread2 and thread 3 implementation.
 
 Note: Stage 2 should be done only after stage1 completion.
+
+
+/
+*
+GS-3331@GS-5561 MINGW64 ~/Desktop/Manuwela/server (master)
+$ ../../../Downloads/protoc-23.2-win64/bin/protoc.exe --go_out=. ./protocol/person.proto
+
+GS-3331@GS-5561 MINGW64 ~/Desktop/Manuwela/server (master)
+$ ../../../Downloads/protoc-23.2-win64/bin/protoc.exe --go-grpc_out=. ./protocol/person.proto
+*/
